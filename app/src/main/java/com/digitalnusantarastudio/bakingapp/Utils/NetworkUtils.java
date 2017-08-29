@@ -1,6 +1,7 @@
 package com.digitalnusantarastudio.bakingapp.Utils;
 
 import android.net.Uri;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +21,8 @@ import okhttp3.Response;
  */
 
 public class NetworkUtils {
-    final static private String URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
+    final static private String URL = "http://go.udacity.com/android-baking-app-json";
+
 
     public static URL buildUrl(){
         Uri.Builder builder = Uri.parse(URL).buildUpon();
@@ -49,7 +51,8 @@ public class NetworkUtils {
     }
 
     public static String getResponse(URL url, RequestBody requestBody) throws IOException{
-        return  NetworkUtils.sendPostRequest(url, requestBody);
+        String response = NetworkUtils.sendPostRequest(url, requestBody);
+        return response;
     }
 
     public static JSONObject getJsonObjectResponse(URL url, RequestBody requestBody) throws IOException, JSONException {
