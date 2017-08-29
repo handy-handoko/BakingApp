@@ -1,4 +1,4 @@
-package com.digitalnusantarastudio.bakingapp;
+package com.digitalnusantarastudio.bakingapp.activities;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -12,9 +12,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.Toast;
 
+import com.digitalnusantarastudio.bakingapp.R;
 import com.digitalnusantarastudio.bakingapp.Utils.NetworkUtils;
 import com.digitalnusantarastudio.bakingapp.adapter.RecipeAdapter;
 
