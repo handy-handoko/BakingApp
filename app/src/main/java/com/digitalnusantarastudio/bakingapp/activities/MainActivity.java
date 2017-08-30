@@ -1,6 +1,7 @@
 package com.digitalnusantarastudio.bakingapp.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.digitalnusantarastudio.bakingapp.R;
@@ -120,6 +122,15 @@ public class MainActivity extends FragmentActivity implements
 
     @Override
     public void onListItemClick(int position) {
-
+        try {
+            Intent intent = new Intent(this, RecipeStepActivity.class);
+            intent.putExtra(getString(R.string.steps_json_key), adapter.getData().getJSONObject(position).getString("steps"));
+            Log.d(TAG, adapter.getData().getJSONObject(position).getString("steps"));
+            startActivity(intent);
+        } catch (JSONException e) {
+            //if no steps key in json, show toast to user. So avoid force close and tell user that something wrong happen
+            Toast.makeText(this, "An error occured", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 }
