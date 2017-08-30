@@ -1,7 +1,9 @@
-package com.digitalnusantarastudio.bakingapp;
+package com.digitalnusantarastudio.bakingapp.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.digitalnusantarastudio.bakingapp.R;
 
 public class StepDetailActivity extends AppCompatActivity {
 
