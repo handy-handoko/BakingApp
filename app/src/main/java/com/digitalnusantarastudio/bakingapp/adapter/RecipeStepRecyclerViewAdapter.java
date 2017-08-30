@@ -20,8 +20,7 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
     private JSONArray recipe_json_array;
     private Context context;
 
-    public RecipeStepRecyclerViewAdapter(JSONArray recipe_json_array, ListItemClickListener listItemClickListener) {
-        this.recipe_json_array = recipe_json_array;
+    public RecipeStepRecyclerViewAdapter(ListItemClickListener listItemClickListener) {
         this.listItemClickListener = listItemClickListener;
     }
 
@@ -44,18 +43,26 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
         holder.bind(position);
     }
 
+    public JSONArray getData(){
+        return recipe_json_array;
+    }
+
+    public void setData(JSONArray json_array){
+        this.recipe_json_array = json_array;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return recipe_json_array.length();
     }
 
     public class RecipeStepViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.step) TextView step_text_view;
+        @BindView(R.id.recipe_text_view) TextView step_text_view;
 
         private RecipeStepViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, itemView);
-            step_text_view = view.findViewById(R.id.recipe_text_view);
         }
 
         //function for bind image to adapter
