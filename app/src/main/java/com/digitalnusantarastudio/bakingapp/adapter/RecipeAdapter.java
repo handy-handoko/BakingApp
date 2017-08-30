@@ -57,6 +57,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             return recipe_json_array.length();
     }
 
+    public JSONArray getData(){
+        return recipe_json_array;
+    }
+
     public void setData(JSONArray json_array){
         this.recipe_json_array = json_array;
         notifyDataSetChanged();
