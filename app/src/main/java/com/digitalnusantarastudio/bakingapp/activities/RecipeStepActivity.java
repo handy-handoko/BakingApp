@@ -37,6 +37,8 @@ public class RecipeStepActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        //find static fragment to set data.
+        //got from here https://stackoverflow.com/questions/27293195/pass-data-to-statically-included-fragment-from-fragment-activity
         RecipeStepFragment recipeStepFragment = (RecipeStepFragment)getSupportFragmentManager().findFragmentById(R.id.step_list_fragment);
         recipeStepFragment.setData(steps_json_array);
 
