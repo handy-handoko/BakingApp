@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<!--static fragment for recipe step and ingredients-->
+<fragment android:name="com.digitalnusantarastudio.bakingapp.fragments.RecipeStepFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/step_list_fragment"
     android:layout_height="match_parent"
-    tools:context="com.digitalnusantarastudio.bakingapp.activities.RecipeStepActivity">
-
-</android.support.constraint.ConstraintLayout>
+    android:layout_width="match_parent"/>
