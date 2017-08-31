@@ -24,14 +24,19 @@ public class StepDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_detail);
 
+        //TODO on reload activity reload video
+
+        stepDetailFragment = (StepDetailFragment)getSupportFragmentManager().findFragmentById(R.id.step_detail_fragment);
+
         Intent intent = getIntent();
         String steps_json_string = intent.getStringExtra(getString(R.string.steps_json_key));
+        current_step = intent.getIntExtra(getString(R.string.position_key), 0);
         try {
             steps_json_array = new JSONArray(steps_json_string);
+            load_data();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        stepDetailFragment = (StepDetailFragment)getSupportFragmentManager().findFragmentById(R.id.step_detail_fragment);
     }
 
     public void prev(View view){
