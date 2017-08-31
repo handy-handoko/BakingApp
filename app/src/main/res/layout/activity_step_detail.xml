@@ -7,10 +7,11 @@
     tools:context="com.digitalnusantarastudio.bakingapp.activities.StepDetailActivity">
 
     <!--this container will contain fragment for detail step. -->
-    <FrameLayout android:id="@+id/step_detail_container"
+    <fragment android:name="com.digitalnusantarastudio.bakingapp.fragments.StepDetailFragment"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+        android:id="@+id/step_detail_fragment"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:scaleType="centerInside"
         android:layout_weight="1"/>
 
@@ -25,13 +26,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="Button"
+            android:onClick="prev" />
 
         <Button
             android:id="@+id/btnNext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="Button"
+            android:onClick="next"/>
     </LinearLayout>
 </LinearLayout>
