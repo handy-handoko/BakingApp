@@ -3,6 +3,7 @@ package com.digitalnusantarastudio.bakingapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -55,6 +56,7 @@ public class StepDetailActivity extends AppCompatActivity {
         JSONObject step_json_object;
         try {
             step_json_object = steps_json_array.getJSONObject(current_step);
+            Log.d("StepDetailFragment", step_json_object.getString("videoURL"));
         } catch (JSONException e) {
             e.printStackTrace();
             //if error occured, show toast message and return to avoid crash

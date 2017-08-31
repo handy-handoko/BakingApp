@@ -1,5 +1,7 @@
 package com.digitalnusantarastudio.bakingapp.fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,21 +9,36 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.digitalnusantarastudio.bakingapp.R;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.util.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import butterknife.BindView;
+import static android.R.attr.path;
 
 public class StepDetailFragment extends Fragment {
 //    @BindView(R.id.txtDescription) TextView txtDescription;
     TextView txtDescription;
-    VideoView videoView;
+    private SimpleExoPlayer mExoPlayer;
+    private Uri uri;
+    SimpleExoPlayerView mPlayerView;
+
     public StepDetailFragment() {
         // Required empty public constructor
     }
@@ -32,13 +49,56 @@ public class StepDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_step_detail, container, false);
-        txtDescription = (TextView) view.findViewById(R.id.txtDescription);
+        txtDescription = view.findViewById(R.id.txtDescription);
+        // Initialize the player view.
+        mPlayerView = view.findViewById(R.id.playerView);
 
         return view;
     }
 
+    /**
+     * Initialize ExoPlayer.
+     */
+    private void initializePlayer() {
+        mExoPlayer = ExoPlayerFactory.newSimpleInstance(
+                new DefaultRenderersFactory(getActivity()),
+                new DefaultTrackSelector(), new DefaultLoadControl());
+
+        mPlayerView.setPlayer(mExoPlayer);
+
+        mExoPlayer.setPlayWhenReady(true);
+//        mExoPlayer.seekTo(currentWindow, playbackPosition);
+
+        MediaSource mediaSource = buildMediaSource(uri);
+        mExoPlayer.prepare(mediaSource, true, false);
+
+    }
+
+    private MediaSource buildMediaSource(Uri uri) {
+        return new ExtractorMediaSource(uri,
+                new DefaultHttpDataSourceFactory("bakingapp"),
+                new DefaultExtractorsFactory(), null, null);
+    }
+
     public void showStep(JSONObject jsonObject){
         try {
+            Log.d("StepDetailFragment", jsonObject.getString("videoURL"));
+            if(!jsonObject.getString("videoURL").equals("")){
+                uri = Uri.parse(jsonObject.getString("videoURL"));
+                initializePlayer();
+            } else if(!jsonObject.getString("thumbnailURL").equals("")){
+                //load default artwork using glide.
+                //based on max answer here https://stackoverflow.com/questions/27394016/how-does-one-use-glide-to-download-an-image-into-a-bitmap
+                Glide.with(this)
+                    .asBitmap()
+                    .load(jsonObject.getString("thumbnailURL").equals(""))
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                            mPlayerView.setDefaultArtwork(resource);
+                        }
+                    });
+            }
             txtDescription.setText(jsonObject.getString("description"));
         } catch (JSONException e) {
             e.printStackTrace();
