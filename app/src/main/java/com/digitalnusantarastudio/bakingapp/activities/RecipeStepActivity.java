@@ -1,9 +1,10 @@
 package com.digitalnusantarastudio.bakingapp.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -12,8 +13,6 @@ import com.digitalnusantarastudio.bakingapp.fragments.RecipeStepFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import butterknife.BindView;
 
 public class RecipeStepActivity extends AppCompatActivity implements RecipeStepFragment.OnListItemClickListener{
     // Track whether to display a two-pane or single-pane UI
@@ -32,8 +31,31 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         try {
             steps_json_array = new JSONArray(steps_json_string);
         } catch (JSONException e) {
-            //TODO an error occured redirect back to Main Activity
             e.printStackTrace();
+
+            // if string cannot parsed to json, there is something wrong.
+            // redirect user back to main activity
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+            // set title
+            alertDialogBuilder.setTitle("Opss.. Sorry");
+
+            // set dialog message
+            alertDialogBuilder
+                .setMessage("An error occured. You will redirect to main page.")
+                .setCancelable(false)
+                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, redirect to main Activity
+                        startActivity(new Intent(RecipeStepActivity.this, MainActivity.class));
+                    }
+                });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
         }
 
         //find static fragment to set data.
