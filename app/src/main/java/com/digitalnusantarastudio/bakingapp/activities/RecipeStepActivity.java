@@ -15,7 +15,7 @@ import org.json.JSONException;
 
 import butterknife.BindView;
 
-public class RecipeStepActivity extends AppCompatActivity {
+public class RecipeStepActivity extends AppCompatActivity implements RecipeStepFragment.OnListItemClickListener{
     // Track whether to display a two-pane or single-pane UI
     // A single-pane display refers to phone screens, and two-pane to larger tablet screens
     private boolean mTwoPane;
@@ -29,7 +29,6 @@ public class RecipeStepActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String steps_json_string = intent.getStringExtra(getString(R.string.steps_json_key));
-        Log.d(TAG, steps_json_string);
         try {
             steps_json_array = new JSONArray(steps_json_string);
         } catch (JSONException e) {
@@ -49,5 +48,22 @@ public class RecipeStepActivity extends AppCompatActivity {
             LinearLayout navigation_linear_layout = (LinearLayout)findViewById(R.id.navigation_linear_layout);
             navigation_linear_layout.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onItemClickSelected(int position) {
+        if (mTwoPane) {
+            //TODO for fragment
+        } else {
+            //for phone
+            try {
+                Intent intent = new Intent(this, StepDetailActivity.class);
+                intent.putExtra(getString(R.string.step_detail_key), steps_json_array.getJSONObject(position).toString());
+                startActivity(intent);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

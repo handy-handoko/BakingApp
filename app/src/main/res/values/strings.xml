@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">BakingApp</string>
     <string name="steps_json_key">steps</string>
+    <string name="step_detail_key">step_detail</string>
 </resources>

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.digitalnusantarastudio.bakingapp.R;
 
 import org.json.JSONArray;
@@ -30,11 +31,8 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
 
     @Override
     public RecipeStepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         this.context = parent.getContext();
-
         View view = LayoutInflater.from(context).inflate(R.layout.recipe_list_item, parent, false);
-
         return new RecipeStepRecyclerViewAdapter.RecipeStepViewHolder(view);
     }
 
@@ -54,15 +52,19 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
 
     @Override
     public int getItemCount() {
-        return recipe_json_array.length();
+        if(recipe_json_array == null)
+            return 0;
+        else
+            return recipe_json_array.length();
     }
 
-    public class RecipeStepViewHolder extends RecyclerView.ViewHolder {
+    class RecipeStepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.recipe_text_view) TextView step_text_view;
 
         private RecipeStepViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, itemView);
+            view.setOnClickListener(this);
         }
 
         //function for bind image to adapter
@@ -72,6 +74,11 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+            listItemClickListener.onListItemClick(getAdapterPosition());
         }
     }
 }
