@@ -56,13 +56,10 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
             //TODO for fragment
         } else {
             //for phone
-            try {
-                Intent intent = new Intent(this, StepDetailActivity.class);
-                intent.putExtra(getString(R.string.step_detail_key), steps_json_array.getJSONObject(position).toString());
-                startActivity(intent);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            Intent intent = new Intent(this, StepDetailActivity.class);
+            intent.putExtra(getString(R.string.steps_json_key), steps_json_array.toString());
+            intent.putExtra(getString(R.string.position_key), position);
+            startActivity(intent);
         }
 
     }
