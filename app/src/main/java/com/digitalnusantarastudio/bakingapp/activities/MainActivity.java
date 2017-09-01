@@ -10,6 +10,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +28,7 @@ import java.io.IOException;
 
 import okhttp3.FormBody;
 
-public class MainActivity extends FragmentActivity implements
+public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<JSONArray>,
         RecipeAdapter.ListItemClickListener{
     private RecipeAdapter adapter;
@@ -49,7 +50,7 @@ public class MainActivity extends FragmentActivity implements
             layoutManager = new GridLayoutManager(this, 3);
         }
 
-        swipe_refresh_layout = findViewById(R.id.swipe_refresh_layout);
+        swipe_refresh_layout = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh_layout);
         swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -57,11 +58,12 @@ public class MainActivity extends FragmentActivity implements
                 reload_data();
             }
         });
-        RecyclerView recipe_recycler_view = findViewById(R.id.recipe_recycler_view);
+        RecyclerView recipe_recycler_view = (RecyclerView)findViewById(R.id.recipe_recycler_view);
         recipe_recycler_view.setLayoutManager(layoutManager);
         adapter = new RecipeAdapter(this);
         recipe_recycler_view.setAdapter(adapter);
         reload_data();
+        getSupportActionBar().setTitle("Baking App");
     }
 
     public boolean isOnline() {
@@ -124,7 +126,8 @@ public class MainActivity extends FragmentActivity implements
     public void onListItemClick(int position) {
         try {
             Intent intent = new Intent(this, RecipeStepActivity.class);
-            intent.putExtra(getString(R.string.steps_json_key), adapter.getData().getJSONObject(position).getString("steps"));
+            intent.putExtra(getString(R.string.steps_json_key), adapter.getData().getJSONObject(position).getString(getString(R.string.steps_json_key)));
+            intent.putExtra(getString(R.string.recipe_name_key), adapter.getData().getJSONObject(position).getString(getString(R.string.recipe_name_key)));
             Log.d(TAG, adapter.getData().getJSONObject(position).getString("steps"));
             startActivity(intent);
         } catch (JSONException e) {

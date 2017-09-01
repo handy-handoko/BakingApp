@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">BakingApp</string>
     <string name="steps_json_key">steps</string>
+    <string name="recipe_name_key">name</string>
     <string name="position_key">step_detail</string>
     <string name="prev_key">Previous</string>
     <string name="next_key">Next</string>
