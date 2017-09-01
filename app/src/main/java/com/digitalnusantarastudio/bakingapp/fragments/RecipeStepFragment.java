@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.digitalnusantarastudio.bakingapp.R;
 import com.digitalnusantarastudio.bakingapp.adapter.RecipeStepRecyclerViewAdapter;
@@ -22,6 +23,7 @@ public class RecipeStepFragment extends Fragment implements RecipeStepRecyclerVi
     private boolean mTwoPane;
     // Define a new interface OnImageClickListener that triggers a callback in the host activity
     OnListItemClickListener mCallback;
+    OnIngredientsClickListener mOnIngredientsClick;
 
     public RecipeStepFragment() {
     }
@@ -31,14 +33,22 @@ public class RecipeStepFragment extends Fragment implements RecipeStepRecyclerVi
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recipe_step_fragment_layout, container, false);
 
+        TextView txtIngredients = view.findViewById(R.id.txtIngredients);
+        txtIngredients.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnIngredientsClick.onIngredientsClick();
+            }
+        });
+
         //set adapter without data. activity will set data later.
         adapter = new RecipeStepRecyclerViewAdapter(this);
         RecyclerView recipe_recycler_view = view.findViewById(R.id.recipe_recycler_view);
         recipe_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
         recipe_recycler_view.setAdapter(adapter);
-
         return view;
     }
+
 
     public void setData(JSONArray recipe_json_array){
         adapter.setData(recipe_json_array);
@@ -49,9 +59,11 @@ public class RecipeStepFragment extends Fragment implements RecipeStepRecyclerVi
         mCallback.onItemClickSelected(position);
     }
 
-
     // OnImageClickListener interface, calls a method in the host activity named onImageSelected
     public interface OnListItemClickListener { void onItemClickSelected(int position); }
+
+    // OnImageClickListener interface, calls a method in the host activity named onImageSelected
+    public interface OnIngredientsClickListener { void onIngredientsClick(); }
 
     // Override onAttach to make sure that the container activity has implemented the callback
     @Override
@@ -62,6 +74,7 @@ public class RecipeStepFragment extends Fragment implements RecipeStepRecyclerVi
         // If not, it throws an exception
         try {
             mCallback = (OnListItemClickListener) context;
+            mOnIngredientsClick = (OnIngredientsClickListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement OnImageClickListener");

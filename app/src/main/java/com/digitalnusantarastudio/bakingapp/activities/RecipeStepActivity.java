@@ -16,13 +16,16 @@ import com.digitalnusantarastudio.bakingapp.fragments.StepDetailFragment;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class RecipeStepActivity extends AppCompatActivity implements RecipeStepFragment.OnListItemClickListener{
+public class RecipeStepActivity extends AppCompatActivity implements
+        RecipeStepFragment.OnListItemClickListener,
+        RecipeStepFragment.OnIngredientsClickListener{
     // Track whether to display a two-pane or single-pane UI
     // A single-pane display refers to phone screens, and two-pane to larger tablet screens
     private boolean mTwoPane;
     private int current_step = 0;
     private StepDetailFragment stepDetailFragment;
-    JSONArray steps_json_array;
+    private JSONArray steps_json_array;
+    private JSONArray ingredients_json_array;
     private static final String TAG = RecipeStepActivity.class.getSimpleName();
 
     @Override
@@ -32,8 +35,11 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
 
         Intent intent = getIntent();
         String steps_json_string = intent.getStringExtra(getString(R.string.steps_json_key));
+        String ingredients_json_string = intent.getStringExtra(getString(R.string.ingredients_json_key));
+
         try {
             steps_json_array = new JSONArray(steps_json_string);
+            ingredients_json_array = new JSONArray(ingredients_json_string);
         } catch (JSONException e) {
             e.printStackTrace();
 
@@ -97,5 +103,14 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
             intent.putExtra(getString(R.string.position_key), position);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onIngredientsClick() {
+
+        //TODO if fragment
+        Intent intent = new Intent(this, IngredientsActivity.class);
+        intent.putExtra(getString(R.string.ingredients_json_key), ingredients_json_array.toString());
+        startActivity(intent);
     }
 }

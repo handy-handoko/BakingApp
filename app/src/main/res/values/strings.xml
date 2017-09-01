@@ -6,4 +6,5 @@
     <string name="position_key">step_detail</string>
     <string name="prev_key">Previous</string>
     <string name="next_key">Next</string>
+    <string name="ingredients_json_key">ingredients</string>
 </resources>
