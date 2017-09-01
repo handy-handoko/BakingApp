@@ -8,6 +8,7 @@
     android:orientation="horizontal">
     <!--static fragment for recipe step and ingredients-->
     <fragment
+        android:name="com.digitalnusantarastudio.bakingapp.fragments.RecipeStepFragment"
         android:id="@+id/step_list_fragment"
         android:layout_height="match_parent"
         android:layout_width="200dp"/>
@@ -18,8 +19,9 @@
         android:layout_height="match_parent"
         android:background="@android:color/darker_gray" />
 
-    <FrameLayout
-        android:id="@+id/step_detail"
-        android:layout_width="wrap_content"
+    <fragment
+        android:name="com.digitalnusantarastudio.bakingapp.fragments.StepDetailFragment"
+        android:id="@+id/step_detail_fragment"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>

@@ -7,9 +7,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.digitalnusantarastudio.bakingapp.R;
 import com.digitalnusantarastudio.bakingapp.fragments.RecipeStepFragment;
+import com.digitalnusantarastudio.bakingapp.fragments.StepDetailFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +20,8 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
     // Track whether to display a two-pane or single-pane UI
     // A single-pane display refers to phone screens, and two-pane to larger tablet screens
     private boolean mTwoPane;
+    private int current_step = 0;
+    private StepDetailFragment stepDetailFragment;
     JSONArray steps_json_array;
     private static final String TAG = RecipeStepActivity.class.getSimpleName();
 
@@ -70,12 +74,22 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
             LinearLayout navigation_linear_layout = (LinearLayout)findViewById(R.id.navigation_linear_layout);
             navigation_linear_layout.setVisibility(View.GONE);
         }
+
+        stepDetailFragment = (StepDetailFragment)getSupportFragmentManager().findFragmentById(R.id.step_detail_fragment);
+        getSupportActionBar().setTitle(intent.getStringExtra(getString(R.string.recipe_name_key)));
     }
 
     @Override
     public void onItemClickSelected(int position) {
         if (mTwoPane) {
-            //TODO for fragment
+            //for fragment
+            try {
+                stepDetailFragment.showStep(steps_json_array.getJSONObject(current_step));
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "An error occured", Toast.LENGTH_SHORT).show();
+                return;
+            }
         } else {
             //for phone
             Intent intent = new Intent(this, StepDetailActivity.class);
@@ -83,6 +97,5 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
             intent.putExtra(getString(R.string.position_key), position);
             startActivity(intent);
         }
-
     }
 }
