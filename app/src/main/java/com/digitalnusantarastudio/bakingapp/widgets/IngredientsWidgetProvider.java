@@ -1,9 +1,11 @@
-package com.digitalnusantarastudio.bakingapp;
+package com.digitalnusantarastudio.bakingapp.widgets;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.widget.RemoteViews;
+
+import com.digitalnusantarastudio.bakingapp.R;
 
 /**
  * Implementation of App Widget functionality.
