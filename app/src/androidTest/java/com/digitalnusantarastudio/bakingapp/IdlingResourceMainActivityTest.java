@@ -40,6 +40,9 @@ public class IdlingResourceMainActivityTest {
     @Test
     public void clickRecipeItem(){
         //test to click recycler view
+        //recycler view isn't adapter view. so cann't using on data. using onView Instead
+        //https://guides.codepath.com/android/UI-Testing-with-Espresso
+
         //thanks to gabor and jdebon
         //https://stackoverflow.com/questions/27396583/how-to-click-on-an-item-inside-a-recyclerview-in-espresso
         onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
