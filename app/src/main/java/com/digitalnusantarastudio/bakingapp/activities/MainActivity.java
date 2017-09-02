@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -19,6 +23,7 @@ import android.widget.Toast;
 import com.digitalnusantarastudio.bakingapp.R;
 import com.digitalnusantarastudio.bakingapp.Utils.NetworkUtils;
 import com.digitalnusantarastudio.bakingapp.adapter.RecipeAdapter;
+import com.digitalnusantarastudio.bakingapp.idlingResources.RecipeIdlingResource;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements
     private static final int ASYNCTASK_LOADER = 123;
     private static final String TAG = MainActivity.class.getSimpleName();
     SwipeRefreshLayout swipe_refresh_layout;
+    // The Idling Resource which will be null in production.
+    @Nullable private RecipeIdlingResource mIdlingResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,5 +143,14 @@ public class MainActivity extends AppCompatActivity implements
             Toast.makeText(this, "An error occured", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new RecipeIdlingResource();
+        }
+        return mIdlingResource;
     }
 }
