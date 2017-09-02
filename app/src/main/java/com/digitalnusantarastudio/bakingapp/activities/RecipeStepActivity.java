@@ -107,7 +107,6 @@ public class RecipeStepActivity extends AppCompatActivity implements
 
     @Override
     public void onIngredientsClick() {
-
         //TODO if fragment
         Intent intent = new Intent(this, IngredientsActivity.class);
         intent.putExtra(getString(R.string.ingredients_json_key), ingredients_json_array.toString());
