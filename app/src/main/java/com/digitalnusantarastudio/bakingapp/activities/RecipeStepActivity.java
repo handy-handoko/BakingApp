@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.digitalnusantarastudio.bakingapp.R;
+import com.digitalnusantarastudio.bakingapp.fragments.IngredientsFragment;
 import com.digitalnusantarastudio.bakingapp.fragments.RecipeStepFragment;
 import com.digitalnusantarastudio.bakingapp.fragments.StepDetailFragment;
 
@@ -22,8 +23,9 @@ public class RecipeStepActivity extends AppCompatActivity implements
     // Track whether to display a two-pane or single-pane UI
     // A single-pane display refers to phone screens, and two-pane to larger tablet screens
     private boolean mTwoPane;
+//    private boolean mIsStepFragment = false;//set to true if user using tab and access step fragment
     private int current_step = 0;
-    private StepDetailFragment stepDetailFragment;
+    private StepDetailFragment stepDetailFragment = null;
     private JSONArray steps_json_array;
     private JSONArray ingredients_json_array;
     private static final String TAG = RecipeStepActivity.class.getSimpleName();
@@ -79,9 +81,15 @@ public class RecipeStepActivity extends AppCompatActivity implements
 
             LinearLayout navigation_linear_layout = (LinearLayout)findViewById(R.id.navigation_linear_layout);
             navigation_linear_layout.setVisibility(View.GONE);
+
+            //set ingredients fragment as default.
+            IngredientsFragment ingredientsFragment = new IngredientsFragment();
+            ingredientsFragment.setData(ingredients_json_array);
+            getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, stepDetailFragment)
+                .commit();
         }
 
-        stepDetailFragment = (StepDetailFragment)getSupportFragmentManager().findFragmentById(R.id.step_detail_fragment);
         getSupportActionBar().setTitle(intent.getStringExtra(getString(R.string.recipe_name_key)));
     }
 
@@ -89,7 +97,14 @@ public class RecipeStepActivity extends AppCompatActivity implements
     public void onItemClickSelected(int position) {
         if (mTwoPane) {
             //for fragment
+            if(stepDetailFragment == null){//if detail fragment null mean active fragment is ingredients fragment
+                stepDetailFragment = new StepDetailFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, stepDetailFragment)
+                        .commit();
+            }
             try {
+//                stepDetailFragment = (StepDetailFragment)getSupportFragmentManager().findFragmentById(R.id.step_detail_fragment);
                 stepDetailFragment.showStep(steps_json_array.getJSONObject(current_step));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -107,9 +122,22 @@ public class RecipeStepActivity extends AppCompatActivity implements
 
     @Override
     public void onIngredientsClick() {
-        //TODO if fragment
-        Intent intent = new Intent(this, IngredientsActivity.class);
-        intent.putExtra(getString(R.string.ingredients_json_key), ingredients_json_array.toString());
-        startActivity(intent);
+        if (mTwoPane) {
+            //for fragment
+            if(stepDetailFragment != null){//if active fragment is stepDetailFragment
+                IngredientsFragment ingredientsFragment = new IngredientsFragment();
+                ingredientsFragment.setData(ingredients_json_array);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, stepDetailFragment)
+                        .commit();
+                stepDetailFragment = null;//empty stepDetailFragment
+            }
+            //if current active fragment is IngredientsFragment, so nothing to do
+        } else {
+            //for phone
+            Intent intent = new Intent(this, IngredientsActivity.class);
+            intent.putExtra(getString(R.string.ingredients_json_key), ingredients_json_array.toString());
+            startActivity(intent);
+        }
     }
 }
