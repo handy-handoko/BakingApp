@@ -32,7 +32,7 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
 public class IdlingResourceMainActivityTest {
-    @Rule public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<MainActivity>(MainActivity.class);
+    @Rule public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     private IdlingResource mIdlingResource;
 
