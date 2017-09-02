@@ -7,4 +7,6 @@
     <string name="prev_key">Previous</string>
     <string name="next_key">Next</string>
     <string name="ingredients_json_key">ingredients</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
