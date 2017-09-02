@@ -164,6 +164,11 @@ public class IngredientContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        //clean table from previous data
+        return clean(uri, selection, selectionArgs);
+    }
+
+    public int delete_by_id(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         // Get access to the database and write URI matching code to recognize a single item
         final SQLiteDatabase db = mIngredientDbHelper.getWritableDatabase();
         int match = sUriMatcher.match(uri);
@@ -202,6 +207,30 @@ public class IngredientContentProvider extends ContentProvider {
                 String id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
                 ingredientsDeleted = db.delete(IngredientEntry.TABLE_NAME, IngredientEntry.COLUMN_RECIPE_ID+"=?", new String[]{id});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        // Notify the resolver of a change and return the number of items deleted
+        if (ingredientsDeleted != 0) {
+            // A plant (or more) was deleted, set notification
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        // Return the number of ingredients deleted
+        return ingredientsDeleted;
+    }
+
+    public int clean(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        // Get access to the database and write URI matching code to recognize a single item
+        final SQLiteDatabase db = mIngredientDbHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        // Keep track of the number of deleted ingredients
+        int ingredientsDeleted; // starts as 0
+        switch (match) {
+            // Handle the single item case, recognized by the ID included in the URI path
+            case INGREDIENTS:
+                // Use selections/selectionArgs to filter for this ID
+                ingredientsDeleted = db.delete(IngredientEntry.TABLE_NAME, null, null);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

@@ -22,7 +22,10 @@
         <activity android:name=".activities.RecipeStepActivity" />
         <activity android:name=".activities.StepDetailActivity" />
         <activity android:name=".activities.IngredientsActivity" />
-
+        <provider
+            android:name=".data.IngredientContentProvider"
+            android:authorities="com.digitalnusantarastudio.bakingapp"
+            android:exported="true" />
         <receiver android:name=".widgets.IngredientsWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

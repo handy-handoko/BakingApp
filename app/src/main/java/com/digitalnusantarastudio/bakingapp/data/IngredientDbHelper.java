@@ -44,7 +44,8 @@ public class IngredientDbHelper extends SQLiteOpenHelper {
                 IngredientEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 IngredientEntry.COLUMN_QUANTITY + " INTEGER NOT NULL, " +
                 IngredientEntry.COLUMN_MEASURE + " TEXT NOT NULL, " +
-                IngredientEntry.COLUMN_INGREDIENT_NAME + " TEXT NOT NULL)";
+                IngredientEntry.COLUMN_INGREDIENT_NAME + " TEXT NOT NULL, " +
+                IngredientEntry.COLUMN_RECIPE_ID + " INTEGER NOT NULL)";
 
         sqLiteDatabase.execSQL(SQL_CREATE_PLANTS_TABLE);
     }
