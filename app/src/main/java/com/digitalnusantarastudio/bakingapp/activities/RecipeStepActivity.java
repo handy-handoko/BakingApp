@@ -28,6 +28,7 @@ public class RecipeStepActivity extends AppCompatActivity implements
     private StepDetailFragment stepDetailFragment = null;
     private JSONArray steps_json_array;
     private JSONArray ingredients_json_array;
+    private int recipe_id;
     private static final String TAG = RecipeStepActivity.class.getSimpleName();
 
     @Override
@@ -38,6 +39,7 @@ public class RecipeStepActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         String steps_json_string = intent.getStringExtra(getString(R.string.steps_json_key));
         String ingredients_json_string = intent.getStringExtra(getString(R.string.ingredients_json_key));
+        recipe_id = intent.getIntExtra(getString(R.string.recipe_id_json_key), 0);
 
         try {
             steps_json_array = new JSONArray(steps_json_string);
@@ -84,7 +86,7 @@ public class RecipeStepActivity extends AppCompatActivity implements
 
             //set ingredients fragment as default.
             IngredientsFragment ingredientsFragment = new IngredientsFragment();
-            ingredientsFragment.setData(ingredients_json_array);
+            ingredientsFragment.setData(recipe_id, ingredients_json_array);
             getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, stepDetailFragment)
                 .commit();
@@ -100,8 +102,8 @@ public class RecipeStepActivity extends AppCompatActivity implements
             if(stepDetailFragment == null){//if detail fragment null mean active fragment is ingredients fragment
                 stepDetailFragment = new StepDetailFragment();
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, stepDetailFragment)
-                        .commit();
+                    .replace(R.id.fragment_container, stepDetailFragment)
+                    .commit();
             }
             try {
 //                stepDetailFragment = (StepDetailFragment)getSupportFragmentManager().findFragmentById(R.id.step_detail_fragment);
@@ -126,7 +128,7 @@ public class RecipeStepActivity extends AppCompatActivity implements
             //for fragment
             if(stepDetailFragment != null){//if active fragment is stepDetailFragment
                 IngredientsFragment ingredientsFragment = new IngredientsFragment();
-                ingredientsFragment.setData(ingredients_json_array);
+                ingredientsFragment.setData(recipe_id, ingredients_json_array);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, stepDetailFragment)
                         .commit();

@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements
             Intent intent = new Intent(this, RecipeStepActivity.class);
             intent.putExtra(getString(R.string.steps_json_key), adapter.getData().getJSONObject(position).getString(getString(R.string.steps_json_key)));
             intent.putExtra(getString(R.string.recipe_name_key), adapter.getData().getJSONObject(position).getString(getString(R.string.recipe_name_key)));
+            intent.putExtra(getString(R.string.recipe_id_json_key), adapter.getData().getJSONObject(position).getString(getString(R.string.recipe_id_json_key)));
             intent.putExtra(getString(R.string.ingredients_json_key), adapter.getData().getJSONObject(position).getString(getString(R.string.ingredients_json_key)));
             Log.d(TAG, adapter.getData().getJSONObject(position).getString("steps"));
             startActivity(intent);

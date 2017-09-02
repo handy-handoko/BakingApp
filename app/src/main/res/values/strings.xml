@@ -1,12 +1,14 @@
 <resources>
     <string name="app_name">BakingApp</string>
     <string name="ingredients_text">Ingredients</string>
+    <string name="recipe_id_json_key">id</string>
     <string name="steps_json_key">steps</string>
     <string name="recipe_name_key">name</string>
     <string name="position_key">step_detail</string>
     <string name="prev_key">Previous</string>
     <string name="next_key">Next</string>
     <string name="ingredients_json_key">ingredients</string>
+    <string name="show_ingredients_text">Show ingredients on widget</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
 </resources>
