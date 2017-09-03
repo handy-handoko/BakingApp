@@ -64,6 +64,9 @@ public class IdlingResourceMainActivityTest {
         }
     }
 
+
+    // thanks to chiu ki chan for code and tutorial to match toolbar.
+    // http://blog.sqisland.com/2015/05/espresso-match-toolbar-title.html
     private static ViewInteraction matchToolbarTitle(CharSequence title) {
         return onView(isAssignableFrom(Toolbar.class))
                 .check(matches(withToolbarTitle(is(title))));
