@@ -3,11 +3,14 @@ package com.digitalnusantarastudio.bakingapp.widgets;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.digitalnusantarastudio.bakingapp.R;
+import com.digitalnusantarastudio.bakingapp.activities.MainActivity;
 import com.digitalnusantarastudio.bakingapp.data.IngredientContract;
 
 import static com.digitalnusantarastudio.bakingapp.data.IngredientContract.BASE_CONTENT_URI;
@@ -20,33 +23,15 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-
-        Uri INGREDIENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_INGREDIENTS).build();
-        Cursor cursor = context.getContentResolver().query(
-                INGREDIENT_URI,
-                null,
-                null,
-                null,
-                null
-        );
-
-        String ingredients = "";
-        if (cursor != null && cursor.getCount() > 0) {
-            try {
-                while (cursor.moveToNext()) {
-                    int quantity = cursor.getInt(cursor.getColumnIndex(IngredientContract.IngredientEntry.COLUMN_QUANTITY));
-                    String measure = cursor.getString(cursor.getColumnIndex(IngredientContract.IngredientEntry.COLUMN_MEASURE));
-                    String ingredient = cursor.getString(cursor.getColumnIndex(IngredientContract.IngredientEntry.COLUMN_INGREDIENT_NAME));
-                    ingredients += quantity + " " + measure + " " + ingredient + "\n";
-                }
-            } finally {
-                cursor.close();
-            }
-        }
+        final String TAG = IngredientsWidgetProvider.class.getSimpleName();
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget_provider);
-        views.setTextViewText(R.id.ingredients_widget_text, ingredients);
+
+        // Set the GridWidgetService intent to act as the adapter for the GridView
+        Intent intent = new Intent(context, WidgetService.class);
+        views.setRemoteAdapter(R.id.listViewWidget, intent);
+        Log.d(TAG, views.toString());
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
