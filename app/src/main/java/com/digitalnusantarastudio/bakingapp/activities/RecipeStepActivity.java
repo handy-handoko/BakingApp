@@ -81,14 +81,11 @@ public class RecipeStepActivity extends AppCompatActivity implements
         if(findViewById(R.id.recipe_linear_layout) != null) {
             mTwoPane = true;
 
-            LinearLayout navigation_linear_layout = (LinearLayout)findViewById(R.id.navigation_linear_layout);
-            navigation_linear_layout.setVisibility(View.GONE);
-
             //set ingredients fragment as default.
             IngredientsFragment ingredientsFragment = new IngredientsFragment();
             ingredientsFragment.setData(recipe_id, ingredients_json_array);
             getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, stepDetailFragment)
+                .replace(R.id.fragment_container, ingredientsFragment)
                 .commit();
         }
 
