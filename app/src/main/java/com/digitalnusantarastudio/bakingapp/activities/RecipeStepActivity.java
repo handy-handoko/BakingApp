@@ -24,7 +24,6 @@ public class RecipeStepActivity extends AppCompatActivity implements
     // A single-pane display refers to phone screens, and two-pane to larger tablet screens
     private boolean mTwoPane;
 //    private boolean mIsStepFragment = false;//set to true if user using tab and access step fragment
-    private int current_step = 0;
     private StepDetailFragment stepDetailFragment = null;
     private JSONArray steps_json_array;
     private JSONArray ingredients_json_array;
@@ -97,10 +96,10 @@ public class RecipeStepActivity extends AppCompatActivity implements
         if (mTwoPane) {
             //for fragment
             if(stepDetailFragment == null){//if detail fragment null mean active fragment is ingredients fragment
-                stepDetailFragment = new StepDetailFragment();
+                this.stepDetailFragment = new StepDetailFragment();
 
                 try {
-                    stepDetailFragment.setData(steps_json_array.getJSONObject(current_step));
+                    stepDetailFragment.setData(steps_json_array.getJSONObject(position));
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(this, "An error occured", Toast.LENGTH_SHORT).show();
@@ -128,7 +127,7 @@ public class RecipeStepActivity extends AppCompatActivity implements
                 IngredientsFragment ingredientsFragment = new IngredientsFragment();
                 ingredientsFragment.setData(recipe_id, ingredients_json_array);
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, stepDetailFragment)
+                        .replace(R.id.fragment_container, ingredientsFragment)
                         .commit();
                 stepDetailFragment = null;//empty stepDetailFragment
             }
