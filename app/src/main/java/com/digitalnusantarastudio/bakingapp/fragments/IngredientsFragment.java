@@ -3,6 +3,7 @@ package com.digitalnusantarastudio.bakingapp.fragments;
 
 import android.content.ContentValues;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +26,7 @@ import butterknife.Unbinder;
  * A simple {@link Fragment} subclass.
  */
 public class IngredientsFragment extends Fragment{
-    private IngredientsAdapter adapter;
+    private IngredientsAdapter adapter= new IngredientsAdapter();
     private int recipe_id = 0;
     private static final String TAG = IngredientsFragment.class.getSimpleName();
     private Unbinder unbinder;
@@ -47,8 +48,6 @@ public class IngredientsFragment extends Fragment{
         View view =  inflater.inflate(R.layout.fragment_ingredients, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        //set adapter without data. activity will set data later.
-        adapter = new IngredientsAdapter();
         RecyclerView ingredients_recycler_view = view.findViewById(R.id.ingredients_recycler_view);
         ingredients_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
         ingredients_recycler_view.setAdapter(adapter);
