@@ -34,11 +34,16 @@ public class StepDetailFragment extends Fragment {
 //    @BindView(R.id.txtDescription) TextView txtDescription;
     TextView txtDescription;
     private SimpleExoPlayer mExoPlayer;
-    private Uri uri;
     private SimpleExoPlayerView mPlayerView;
     private long playbackPosition;
     int currentWindow;
     boolean playWhenReady;
+    private Uri videoUri;
+    private String videoUrl;
+    private String thumbnailURL;
+    private String desc;
+    private boolean setData = false;//flag, will true if data already set by setData()
+
 
     public StepDetailFragment() {
         // Required empty public constructor
@@ -53,6 +58,26 @@ public class StepDetailFragment extends Fragment {
         txtDescription = view.findViewById(R.id.txtDescription);
         // Initialize the player view.
         mPlayerView = view.findViewById(R.id.playerView);
+        if(setData){
+            releasePlayer();
+            if(!videoUrl.equals("")){
+                videoUri = Uri.parse(videoUrl);
+                initializePlayer();
+            } else if(!thumbnailURL.equals("")){
+                //load default artwork using glide.
+                //based on max answer here https://stackoverflow.com/questions/27394016/how-does-one-use-glide-to-download-an-image-into-a-bitmap
+                Glide.with(this)
+                        .asBitmap()
+                        .load(thumbnailURL.equals(""))
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                                mPlayerView.setDefaultArtwork(resource);
+                            }
+                        });
+            }
+            txtDescription.setText(desc);
+        }
 
         return view;
     }
@@ -71,7 +96,7 @@ public class StepDetailFragment extends Fragment {
         mExoPlayer.setPlayWhenReady(playWhenReady);
         mExoPlayer.seekTo(currentWindow, playbackPosition);
 
-        MediaSource mediaSource = buildMediaSource(uri);
+        MediaSource mediaSource = buildMediaSource(videoUri);
         mExoPlayer.prepare(mediaSource, true, false);
 
     }
@@ -82,12 +107,28 @@ public class StepDetailFragment extends Fragment {
                 new DefaultExtractorsFactory(), null, null);
     }
 
+    //public void setData
+    public void setData(JSONObject jsonObject){
+        try {
+            if(!jsonObject.getString("videoURL").equals("")){
+                videoUrl = jsonObject.getString("videoURL");
+            } else if(!jsonObject.getString("thumbnailURL").equals("")){
+                thumbnailURL = jsonObject.getString("thumbnailURL");
+            }
+            desc = jsonObject.getString("description");
+            setData = true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //for one pane activity, just set data because one pane activity using static fragment
     public void showStep(JSONObject jsonObject){
         releasePlayer();
         try {
             Log.d("StepDetailFragment", jsonObject.getString("videoURL"));
             if(!jsonObject.getString("videoURL").equals("")){
-                uri = Uri.parse(jsonObject.getString("videoURL"));
+                videoUri = Uri.parse(jsonObject.getString("videoURL"));
                 initializePlayer();
             } else if(!jsonObject.getString("thumbnailURL").equals("")){
                 //load default artwork using glide.

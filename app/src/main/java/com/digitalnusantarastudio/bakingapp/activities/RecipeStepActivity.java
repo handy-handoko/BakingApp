@@ -98,17 +98,18 @@ public class RecipeStepActivity extends AppCompatActivity implements
             //for fragment
             if(stepDetailFragment == null){//if detail fragment null mean active fragment is ingredients fragment
                 stepDetailFragment = new StepDetailFragment();
+
+                try {
+                    stepDetailFragment.setData(steps_json_array.getJSONObject(current_step));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "An error occured", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, stepDetailFragment)
                     .commit();
-            }
-            try {
-//                stepDetailFragment = (StepDetailFragment)getSupportFragmentManager().findFragmentById(R.id.step_detail_fragment);
-                stepDetailFragment.showStep(steps_json_array.getJSONObject(current_step));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Toast.makeText(this, "An error occured", Toast.LENGTH_SHORT).show();
-                return;
             }
         } else {
             //for phone
