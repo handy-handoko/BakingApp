@@ -78,8 +78,12 @@ public class StepDetailFragment extends Fragment {
             } else if(thumbnailURL!=null){
                 Glide.with(this)
                     .load(thumbnailURL)
+                    .fallback(R.drawable.no_image)
                     .into(stepImageView);
                 stepImageView.setVisibility(View.VISIBLE);
+            }else {
+                //image from http://www.freeiconspng.com/img/23494
+                stepImageView.setImageResource(R.drawable.no_image);
             }
             txtDescription.setText(desc);
         }
