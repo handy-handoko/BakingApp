@@ -73,14 +73,19 @@ public class StepDetailFragment extends Fragment {
                 videoUri = Uri.parse(videoUrl);
                 initializePlayer();
             } else if(thumbnailURL!=null){
+                releasePlayer();
+                videoUri=null;
                 Glide.with(this)
                     .load(thumbnailURL)
                     .fallback(R.drawable.no_image)
                     .into(stepImageView);
                 stepImageView.setVisibility(View.VISIBLE);
             }else {
+                releasePlayer();
+                videoUri=null;
                 //image from http://www.freeiconspng.com/img/23494
                 stepImageView.setImageResource(R.drawable.no_image);
+                stepImageView.setVisibility(View.VISIBLE);
             }
             txtDescription.setText(desc);
         }
@@ -93,8 +98,10 @@ public class StepDetailFragment extends Fragment {
      * https://codelabs.developers.google.com/codelabs/exoplayer-intro/#2
      */
     private void initializePlayer() {
-        if(videoUri == null)
+        if(videoUri == null){
+
             return;
+        }
         mExoPlayer = ExoPlayerFactory.newSimpleInstance(
                 new DefaultRenderersFactory(getActivity()),
                 new DefaultTrackSelector(), new DefaultLoadControl());
@@ -140,14 +147,18 @@ public class StepDetailFragment extends Fragment {
                 initializePlayer();
             } else if(!jsonObject.getString("thumbnailURL").equals("")){
                 videoUri=null;
+                releasePlayer();
                 stepImageView.setVisibility(View.VISIBLE);
                 Glide.with(this)
                     .load(jsonObject.getString("thumbnailURL"))
                     .fallback(R.drawable.no_image)
                     .into(stepImageView);
             } else {
+                videoUri=null;
+                releasePlayer();
                 //image from http://www.freeiconspng.com/img/23494
                 stepImageView.setImageResource(R.drawable.no_image);
+                stepImageView.setVisibility(View.VISIBLE);
             }
             txtDescription.setText(jsonObject.getString("description"));
         } catch (JSONException e) {
