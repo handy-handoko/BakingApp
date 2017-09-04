@@ -1,17 +1,14 @@
 package com.digitalnusantarastudio.bakingapp.fragments;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.digitalnusantarastudio.bakingapp.R;
@@ -70,7 +67,7 @@ public class StepDetailFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         // Initialize the player view.
         mPlayerView = view.findViewById(R.id.playerView);
-        if(setData){
+        if(setData){//set data true if device is tablet
             releasePlayer();
             if(videoUrl != null){
                 videoUri = Uri.parse(videoUrl);
@@ -178,7 +175,7 @@ public class StepDetailFragment extends Fragment {
     @SuppressLint("InlinedApi")
     private void hideSystemUi() {
         mPlayerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
