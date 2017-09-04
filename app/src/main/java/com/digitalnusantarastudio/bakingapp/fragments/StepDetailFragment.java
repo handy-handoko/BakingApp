@@ -9,11 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.digitalnusantarastudio.bakingapp.R;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -30,9 +30,11 @@ import com.google.android.exoplayer2.util.Util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public class StepDetailFragment extends Fragment {
-//    @BindView(R.id.txtDescription) TextView txtDescription;
-    TextView txtDescription;
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
     private long playbackPosition;
@@ -43,6 +45,10 @@ public class StepDetailFragment extends Fragment {
     private String thumbnailURL;
     private String desc;
     private boolean setData = false;//flag, will true if data already set by setData()
+    @BindView(R.id.txtDescription) TextView txtDescription;
+    @BindView(R.id.stepImageView) ImageView stepImageView;
+    private Unbinder unbinder;
+    private final static String TAG = StepDetailFragment.class.getSimpleName();
 
 
     public StepDetailFragment() {
@@ -51,11 +57,17 @@ public class StepDetailFragment extends Fragment {
 
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_step_detail, container, false);
-        txtDescription = view.findViewById(R.id.txtDescription);
+        unbinder = ButterKnife.bind(this, view);
         // Initialize the player view.
         mPlayerView = view.findViewById(R.id.playerView);
         if(setData){
@@ -64,17 +76,10 @@ public class StepDetailFragment extends Fragment {
                 videoUri = Uri.parse(videoUrl);
                 initializePlayer();
             } else if(!thumbnailURL.equals("")){
-                //load default artwork using glide.
-                //based on max answer here https://stackoverflow.com/questions/27394016/how-does-one-use-glide-to-download-an-image-into-a-bitmap
                 Glide.with(this)
-                        .asBitmap()
-                        .load(thumbnailURL.equals(""))
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                                mPlayerView.setDefaultArtwork(resource);
-                            }
-                        });
+                    .load(thumbnailURL)
+                    .into(stepImageView);
+                stepImageView.setVisibility(View.VISIBLE);
             }
             txtDescription.setText(desc);
         }
@@ -87,10 +92,14 @@ public class StepDetailFragment extends Fragment {
      * https://codelabs.developers.google.com/codelabs/exoplayer-intro/#2
      */
     private void initializePlayer() {
+        if(videoUri == null)
+            return;
         mExoPlayer = ExoPlayerFactory.newSimpleInstance(
                 new DefaultRenderersFactory(getActivity()),
                 new DefaultTrackSelector(), new DefaultLoadControl());
 
+        mPlayerView.setVisibility(View.VISIBLE);
+        stepImageView.setVisibility(View.INVISIBLE);
         mPlayerView.setPlayer(mExoPlayer);
 
         mExoPlayer.setPlayWhenReady(playWhenReady);
@@ -98,7 +107,6 @@ public class StepDetailFragment extends Fragment {
 
         MediaSource mediaSource = buildMediaSource(videoUri);
         mExoPlayer.prepare(mediaSource, true, false);
-
     }
 
     private MediaSource buildMediaSource(Uri uri) {
@@ -126,22 +134,21 @@ public class StepDetailFragment extends Fragment {
     public void showStep(JSONObject jsonObject){
         releasePlayer();
         try {
-            Log.d("StepDetailFragment", jsonObject.getString("videoURL"));
             if(!jsonObject.getString("videoURL").equals("")){
+                Toast.makeText(getActivity(), "videoURL"+jsonObject.getString("videoURL"), Toast.LENGTH_SHORT).show();
                 videoUri = Uri.parse(jsonObject.getString("videoURL"));
                 initializePlayer();
             } else if(!jsonObject.getString("thumbnailURL").equals("")){
-                //load default artwork using glide.
-                //based on max answer here https://stackoverflow.com/questions/27394016/how-does-one-use-glide-to-download-an-image-into-a-bitmap
+                videoUri=null;
+                Toast.makeText(getActivity(), "thumbnailURL"+jsonObject.getString("thumbnailURL"), Toast.LENGTH_SHORT).show();
+                stepImageView.setVisibility(View.VISIBLE);
                 Glide.with(this)
-                    .asBitmap()
-                    .load(jsonObject.getString("thumbnailURL").equals(""))
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                        mPlayerView.setDefaultArtwork(resource);
-                        }
-                    });
+                    .load(jsonObject.getString("thumbnailURL"))
+                    .fallback(R.drawable.no_image)
+                    .into(stepImageView);
+            } else {
+                //image from http://www.freeiconspng.com/img/23494
+                stepImageView.setImageResource(R.drawable.no_image);
             }
             txtDescription.setText(jsonObject.getString("description"));
         } catch (JSONException e) {
@@ -193,6 +200,7 @@ public class StepDetailFragment extends Fragment {
     }
 
     private void releasePlayer() {
+        mPlayerView.setVisibility(View.GONE);
         if (mExoPlayer != null) {
             playbackPosition = mExoPlayer.getCurrentPosition();
             currentWindow = mExoPlayer.getCurrentWindowIndex();
