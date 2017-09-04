@@ -72,10 +72,10 @@ public class StepDetailFragment extends Fragment {
         mPlayerView = view.findViewById(R.id.playerView);
         if(setData){
             releasePlayer();
-            if(!videoUrl.equals("")){
+            if(videoUrl != null){
                 videoUri = Uri.parse(videoUrl);
                 initializePlayer();
-            } else if(!thumbnailURL.equals("")){
+            } else if(thumbnailURL!=null){
                 Glide.with(this)
                     .load(thumbnailURL)
                     .into(stepImageView);
