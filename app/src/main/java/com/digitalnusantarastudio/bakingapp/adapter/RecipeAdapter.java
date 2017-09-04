@@ -86,10 +86,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 recipe_text_view.setText(recipe_json_array.getJSONObject(position).getString("name"));
 
                 //default image from https://pixabay.com/en/recipe-label-icon-symbol-spoon-575434/
+                if(!recipe_json_array.getJSONObject(position).getString("image").equals("")){
                 Glide.with(context)
                     .load(recipe_json_array.getJSONObject(position).getString("image"))
                     .fallback(R.drawable.default_recipe)
                     .into(recipe_imageview);
+                } else {
+                    recipe_imageview.setImageResource(R.drawable.default_recipe);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
