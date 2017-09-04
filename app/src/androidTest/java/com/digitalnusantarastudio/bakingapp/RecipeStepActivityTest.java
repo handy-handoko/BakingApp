@@ -8,8 +8,8 @@ import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.digitalnusantarastudio.bakingapp.activities.RecipeStepActivity;
@@ -17,14 +17,14 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
 import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
@@ -35,12 +35,12 @@ import static com.google.android.exoplayer2.ExoPlayer.STATE_READY;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assume.assumeTrue;
 
 /**
  * Created by luqman on 03/09/17.
  */
 
+@RunWith(AndroidJUnit4.class)
 public class RecipeStepActivityTest {
 
     //RecipeStepActivity get some intent data from Main Activity
@@ -200,6 +200,73 @@ public class RecipeStepActivityTest {
     }
 
     /**
+     * test if next button click
+     */
+    @Test
+    public void onNextButtonClick(){
+        if(!isTablet(mActivityTestRule.getActivity())){//this is phone only test
+            onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+            onView(withId(R.id.btnNext)).perform(click());
+
+            //on first clicked, should show desc and video player
+            String recipeStep = "2. Whisk the graham cracker crumbs, 50 grams (1/4 cup) of sugar, and 1/2 teaspoon of salt together in a medium bowl. Pour the melted butter and 1 teaspoon of vanilla into the dry ingredients and stir together until evenly mixed.";
+            onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
+            onView(allOf(withId(R.id.playerView),
+                    withClassName(is(SimpleExoPlayerView.class.getName())))).check(new VideoPlaybackAssertion(true));
+            onView(withId(R.id.stepImageView)).check(matches(not(isDisplayed())));
+        }
+    }
+
+    /**
+     * test if last item and next button click
+     */
+    @Test
+    public void onLastItemNextButtonClick(){
+        if(!isTablet(mActivityTestRule.getActivity())){//this is phone only test
+            onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(6, click()));
+            onView(withId(R.id.btnNext)).perform(click());
+
+
+            //references https://stackoverflow.com/questions/28390574/checking-toast-message-in-android-espresso
+            onView(withText(R.string.next_toast_message)).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        }
+    }
+
+    /**
+     * test if prev button click
+     */
+    @Test
+    public void onPrevButtonClick(){
+        if(!isTablet(mActivityTestRule.getActivity())){//this is phone only test
+            onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(3, click()));
+            onView(withId(R.id.btnPrev)).perform(click());
+
+            //on first clicked, should show desc and video player
+            String recipeStep = "2. Whisk the graham cracker crumbs, 50 grams (1/4 cup) of sugar, and 1/2 teaspoon of salt together in a medium bowl. Pour the melted butter and 1 teaspoon of vanilla into the dry ingredients and stir together until evenly mixed.";
+            onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
+            onView(allOf(withId(R.id.playerView),
+                    withClassName(is(SimpleExoPlayerView.class.getName())))).check(new VideoPlaybackAssertion(true));
+            onView(withId(R.id.stepImageView)).check(matches(not(isDisplayed())));
+        }
+    }
+
+    /**
+     * test if first item and prev button click
+     */
+    @Test
+    public void onFirstItemPrevButtonClick(){
+        if(!isTablet(mActivityTestRule.getActivity())){//this is phone only test
+            onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+            onView(withId(R.id.btnPrev)).perform(click());
+
+            //references https://stackoverflow.com/questions/28390574/checking-toast-message-in-android-espresso
+            onView(withText(R.string.prev_toast_message)).inRoot(withDecorView(not(is(mActivityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        }
+    }
+
+
+
+    /**
      * test navigation.
      */
     @Test
@@ -282,4 +349,5 @@ public class RecipeStepActivityTest {
         }
 
     }
+
 }

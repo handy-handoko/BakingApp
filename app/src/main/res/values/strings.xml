@@ -6,7 +6,9 @@
     <string name="recipe_name_key">name</string>
     <string name="position_key">step_detail</string>
     <string name="prev_key">Previous</string>
+    <string name="prev_toast_message">This is first step</string>
     <string name="next_key">Next</string>
+    <string name="next_toast_message">This is last step</string>
     <string name="ingredients_json_key">ingredients</string>
     <string name="show_ingredients_text">Show ingredients on widget</string>
     <string name="appwidget_text">EXAMPLE</string>
