@@ -95,7 +95,7 @@ public class RecipeStepActivity extends AppCompatActivity implements
     public void onItemClickSelected(int position) {
         if (mTwoPane) {
             //for fragment
-            if(stepDetailFragment == null){//if detail fragment null mean active fragment is ingredients fragment
+//            if(stepDetailFragment == null){//if detail fragment null mean active fragment is ingredients fragment
                 this.stepDetailFragment = new StepDetailFragment();
 
                 try {
@@ -109,7 +109,7 @@ public class RecipeStepActivity extends AppCompatActivity implements
                 getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, stepDetailFragment)
                     .commit();
-            }
+//            }
         } else {
             //for phone
             Intent intent = new Intent(this, StepDetailActivity.class);
