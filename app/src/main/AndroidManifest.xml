@@ -20,8 +20,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.RecipeStepActivity" />
-        <activity android:name=".activities.StepDetailActivity" />
-        <activity android:name=".activities.IngredientsActivity" />
+        <activity android:name=".activities.StepDetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.RecipeStepActivity" />
+        </activity>
+        <activity android:name=".activities.IngredientsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.RecipeStepActivity" />
+        </activity>
         <provider
             android:name=".data.IngredientContentProvider"
             android:authorities="com.digitalnusantarastudio.bakingapp"
