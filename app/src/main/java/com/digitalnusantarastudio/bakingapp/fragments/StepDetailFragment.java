@@ -135,12 +135,10 @@ public class StepDetailFragment extends Fragment {
         releasePlayer();
         try {
             if(!jsonObject.getString("videoURL").equals("")){
-                Toast.makeText(getActivity(), "videoURL"+jsonObject.getString("videoURL"), Toast.LENGTH_SHORT).show();
                 videoUri = Uri.parse(jsonObject.getString("videoURL"));
                 initializePlayer();
             } else if(!jsonObject.getString("thumbnailURL").equals("")){
                 videoUri=null;
-                Toast.makeText(getActivity(), "thumbnailURL"+jsonObject.getString("thumbnailURL"), Toast.LENGTH_SHORT).show();
                 stepImageView.setVisibility(View.VISIBLE);
                 Glide.with(this)
                     .load(jsonObject.getString("thumbnailURL"))
