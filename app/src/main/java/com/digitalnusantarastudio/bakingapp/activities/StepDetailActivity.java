@@ -16,7 +16,7 @@ import org.json.JSONObject;
 
 public class StepDetailActivity extends AppCompatActivity {
     private JSONArray steps_json_array;
-    private int current_step = 0;
+    private int current_step;
     private StepDetailFragment stepDetailFragment;
 
     @Override
@@ -24,17 +24,18 @@ public class StepDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_detail);
 
-        stepDetailFragment = (StepDetailFragment)getSupportFragmentManager().findFragmentById(R.id.step_detail_fragment);
 
         Intent intent = getIntent();
         String steps_json_string = intent.getStringExtra(getString(R.string.steps_json_key));
         current_step = intent.getIntExtra(getString(R.string.position_key), 0);
         try {
             steps_json_array = new JSONArray(steps_json_string);
-            load_data();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        stepDetailFragment = (StepDetailFragment)getSupportFragmentManager().findFragmentById(R.id.step_detail_fragment);
+        getSupportActionBar().hide();
+        load_data();
     }
 
     public void prev(View view){
@@ -59,13 +60,12 @@ public class StepDetailActivity extends AppCompatActivity {
         JSONObject step_json_object;
         try {
             step_json_object = steps_json_array.getJSONObject(current_step);
-            Log.d("StepDetailFragment", step_json_object.getString("videoURL"));
+            stepDetailFragment.showStep(step_json_object);
         } catch (JSONException e) {
             e.printStackTrace();
             //if error occured, show toast message and return to avoid crash
             Toast.makeText(this, "An error occured", Toast.LENGTH_SHORT).show();
             return;
         }
-        stepDetailFragment.showStep(step_json_object);
     }
 }
