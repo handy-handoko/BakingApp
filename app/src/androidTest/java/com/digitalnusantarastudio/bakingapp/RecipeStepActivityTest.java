@@ -3,6 +3,10 @@ package com.digitalnusantarastudio.bakingapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewAssertion;
@@ -11,12 +15,15 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.digitalnusantarastudio.bakingapp.activities.RecipeStepActivity;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +37,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.digitalnusantarastudio.bakingapp.imageMatcher.EspressoTestMatcher.withDrawable;
 import static com.google.android.exoplayer2.ExoPlayer.STATE_BUFFERING;
 import static com.google.android.exoplayer2.ExoPlayer.STATE_READY;
 import static org.hamcrest.Matchers.allOf;
@@ -264,7 +272,17 @@ public class RecipeStepActivityTest {
         }
     }
 
+    /**
+     * test if selected has no image or video
+     */
+    @Test
+    public void onNoImageAndVideo(){
+        // based on Daniele Bottillo blog
+        // https://medium.com/@dbottillo/android-ui-test-espresso-matcher-for-imageview-1a28c832626f
+        onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
 
+        onView(withId(R.id.stepImageView)).check(matches(withDrawable(R.drawable.no_image)));
+    }
 
     /**
      * test navigation.
