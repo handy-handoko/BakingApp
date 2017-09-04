@@ -292,16 +292,22 @@ public class RecipeStepActivityTest {
         if(isTablet(mActivityTestRule.getActivity())){
         String recipeStep = "Recipe Introduction";
         onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-
         onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
 
+        //navigate to ingredients
         onView(withId(R.id.txtIngredients)).perform(click());
-
         onView(withId(R.id.ingredients_recycler_view)).check(new RecyclerViewItemCountAssertion(9));
 
+        //navigate to back to recipe step
         onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-
         onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
+
+        //navigate to another recipe step
+        String recipeStep2 = "2. Whisk the graham cracker crumbs, 50 grams (1/4 cup) of sugar, and 1/2 teaspoon of salt together in a medium bowl. Pour the melted butter and 1 teaspoon of vanilla into the dry ingredients and stir together until evenly mixed.";
+        onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
+        onView(allOf(withId(R.id.playerView),
+                withClassName(is(SimpleExoPlayerView.class.getName())))).check(new VideoPlaybackAssertion(true));
+        onView(withId(R.id.stepImageView)).check(matches(not(isDisplayed())));
         }
     }
 
