@@ -22,7 +22,7 @@
         <activity android:name=".activities.RecipeStepActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.RecipeStepActivity" />
+                android:value=".activities.MainActivity" />
         </activity>
         <activity android:name=".activities.StepDetailActivity">
             <meta-data
