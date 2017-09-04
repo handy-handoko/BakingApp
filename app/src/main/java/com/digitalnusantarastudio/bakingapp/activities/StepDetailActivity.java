@@ -40,7 +40,7 @@ public class StepDetailActivity extends AppCompatActivity {
 
     public void prev(View view){
         if(current_step == 0){
-            Toast.makeText(this, "This is first step", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.prev_toast_message), Toast.LENGTH_SHORT).show();
         }else{
             current_step -= 1;
             load_data();
@@ -49,7 +49,7 @@ public class StepDetailActivity extends AppCompatActivity {
 
     public void next(View view){
         if(current_step == steps_json_array.length()-1){
-            Toast.makeText(this, "This is last step", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.next_toast_message), Toast.LENGTH_SHORT).show();
         }else{
             current_step += 1;
             load_data();
