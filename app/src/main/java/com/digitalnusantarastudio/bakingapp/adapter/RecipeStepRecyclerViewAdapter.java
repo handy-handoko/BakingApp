@@ -32,7 +32,7 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
     @Override
     public RecipeStepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.recipe_list_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.recipe_step_item, parent, false);
         return new RecipeStepRecyclerViewAdapter.RecipeStepViewHolder(view);
     }
 
@@ -59,7 +59,7 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
     }
 
     class RecipeStepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.recipe_text_view) TextView step_text_view;
+        @BindView(R.id.recipe_step_textview) TextView recipe_step_textview;
 
         private RecipeStepViewHolder(View view) {
             super(view);
@@ -70,7 +70,7 @@ public class RecipeStepRecyclerViewAdapter extends RecyclerView.Adapter<RecipeSt
         //function for bind image to adapter
         void bind(int position){
             try {
-                step_text_view.setText(recipe_json_array.getJSONObject(position).getString("shortDescription"));
+                recipe_step_textview.setText(recipe_json_array.getJSONObject(position).getString("shortDescription"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
