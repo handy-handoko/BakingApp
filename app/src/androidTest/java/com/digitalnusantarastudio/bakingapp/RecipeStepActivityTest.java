@@ -13,7 +13,10 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.digitalnusantarastudio.bakingapp.activities.RecipeStepActivity;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,9 +26,15 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.google.android.exoplayer2.ExoPlayer.STATE_BUFFERING;
+import static com.google.android.exoplayer2.ExoPlayer.STATE_READY;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -161,21 +170,40 @@ public class RecipeStepActivityTest {
     }
 
     /**
-     * test step click.
+     * test step with video click. video should played
      */
     @Test
-    public void clickStep(){
-        String recipeStep = "Recipe Introduction";
+    public void clickVideoStep(){
         onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
+        //on first clicked, should show desc and video player
+        String recipeStep = "Recipe Introduction";
         onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
+        onView(allOf(withId(R.id.playerView),
+                withClassName(is(SimpleExoPlayerView.class.getName())))).check(new VideoPlaybackAssertion(true));
+        onView(withId(R.id.stepImageView)).check(matches(not(isDisplayed())));
+    }
+
+    /**
+     * test step with video click.
+     */
+    @Test
+    public void clickImageStep(){
+        onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(5, click()));
+
+        //on first clicked, should show desc and video player
+        String recipeStep = "5. Beat the cream cheese and 50 grams (1/4 cup) of sugar on medium speed in a stand mixer or high speed with a hand mixer for 3 minutes. Decrease the speed to medium-low and gradually add in the cold cream. Add in 2 teaspoons of vanilla and beat until stiff peaks form.";
+        onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
+        onView(allOf(withId(R.id.playerView),
+                withClassName(is(SimpleExoPlayerView.class.getName())))).check(matches(not(isDisplayed())));
+        onView(withId(R.id.stepImageView)).check(matches(isDisplayed()));
     }
 
     /**
      * test navigation.
      */
     @Test
-    public void switchBetweenStepandIngredients(){
+    public void switchBetweenStepAndIngredients(){
         if(isTablet(mActivityTestRule.getActivity())){
         String recipeStep = "Recipe Introduction";
         onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
@@ -217,5 +245,41 @@ public class RecipeStepActivityTest {
             RecyclerView.Adapter adapter = recyclerView.getAdapter();
             assertThat(adapter.getItemCount(), is(expectedCount));
         }
+    }
+
+    //https://stackoverflow.com/questions/46016895/ambiguousviewmatcherexception-simpleexoplayerview-android
+    class VideoPlaybackAssertion implements ViewAssertion {
+
+        private final Matcher<Boolean> matcher;
+
+        //Constructor
+        public VideoPlaybackAssertion(Matcher<Boolean> matcher) {
+            this.matcher = matcher;
+        }
+
+        //Sets the Assertion's matcher to the expected playbck state.
+        public VideoPlaybackAssertion(Boolean expectedState) {
+            this.matcher = is(expectedState);
+        }
+
+        //Method to check if the video is playing.
+        @Override
+        public void check(View view, NoMatchingViewException noViewFoundException) {
+            if (noViewFoundException != null) {
+                throw noViewFoundException;
+            }
+
+            SimpleExoPlayerView exoPlayerView = (SimpleExoPlayerView) view;
+            SimpleExoPlayer exoPlayer = exoPlayerView.getPlayer();
+            int state = exoPlayer.getPlaybackState();
+            Boolean isPlaying;
+            if ((state == STATE_BUFFERING) || (state == STATE_READY)) {
+                isPlaying = true;
+            } else {
+                isPlaying = false;
+            }
+            assertThat(isPlaying, matcher);
+        }
+
     }
 }
