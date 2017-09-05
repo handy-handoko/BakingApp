@@ -166,7 +166,6 @@ public class StepDetailFragment extends Fragment {
 
     //for one pane activity, just set data because one pane activity using static fragment
     public void showStep(JSONObject jsonObject){
-        releasePlayer();
         try {
             if(!jsonObject.getString("videoURL").equals("")){
                 videoUri = Uri.parse(jsonObject.getString("videoURL"));
