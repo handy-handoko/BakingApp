@@ -79,36 +79,39 @@ public class RecipeStepActivity extends AppCompatActivity implements
         if(findViewById(R.id.recipe_linear_layout) != null) {
             mTwoPane = true;
 
-            //set ingredients fragment as default.
-            IngredientsFragment ingredientsFragment = new IngredientsFragment();
-            ingredientsFragment.setData(recipe_id, ingredients_json_array);
-            getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, ingredientsFragment)
-                .commit();
+            if (savedInstanceState == null) {
+                //set ingredients fragment as default.
+                IngredientsFragment ingredientsFragment = new IngredientsFragment();
+                ingredientsFragment.setData(recipe_id, ingredients_json_array);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, ingredientsFragment)
+                        .commit();
+            }
         }
 
         getSupportActionBar().setTitle(intent.getStringExtra(getString(R.string.recipe_name_key)));
     }
 
+    private void loadRecipeStepFragment(int position){
+        this.stepDetailFragment = new StepDetailFragment();
+
+        try {
+            stepDetailFragment.setData(steps_json_array.getJSONObject(position));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "An error occured", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, stepDetailFragment)
+                .commit();
+    }
+
     @Override
     public void onItemClickSelected(int position) {
-        if (mTwoPane) {
-            //for fragment
-//            if(stepDetailFragment == null){//if detail fragment null mean active fragment is ingredients fragment
-                this.stepDetailFragment = new StepDetailFragment();
-
-                try {
-                    stepDetailFragment.setData(steps_json_array.getJSONObject(position));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, "An error occured", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, stepDetailFragment)
-                    .commit();
-//            }
+        if (mTwoPane) { //for fragment
+            loadRecipeStepFragment(position);
         } else {
             //for phone
             Intent intent = new Intent(this, StepDetailActivity.class);

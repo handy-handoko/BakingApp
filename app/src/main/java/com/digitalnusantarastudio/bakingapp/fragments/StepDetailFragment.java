@@ -3,12 +3,15 @@ package com.digitalnusantarastudio.bakingapp.fragments;
 import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.digitalnusantarastudio.bakingapp.R;
@@ -46,6 +49,8 @@ public class StepDetailFragment extends Fragment {
     @BindView(R.id.stepImageView) ImageView stepImageView;
     private Unbinder unbinder;
     private final static String TAG = StepDetailFragment.class.getSimpleName();
+    private static final String PLAYBACK_POSITION_KEY = "playback";
+    private static final String DESCRIPTION_KEY = "desc";
 
 
     public StepDetailFragment() {
@@ -69,9 +74,9 @@ public class StepDetailFragment extends Fragment {
         mPlayerView = view.findViewById(R.id.playerView);
         if(setData){//set data true if device is tablet
             releasePlayer();
-            if(videoUrl != null){
-                videoUri = Uri.parse(videoUrl);
+            if(videoUri != null){
                 initializePlayer();
+                Log.d(TAG, "create view"+playbackPosition);
             } else if(thumbnailURL!=null){
                 releasePlayer();
                 videoUri=null;
@@ -90,7 +95,28 @@ public class StepDetailFragment extends Fragment {
             txtDescription.setText(desc);
         }
 
+        if (savedInstanceState != null) {
+            playbackPosition = savedInstanceState.getLong(PLAYBACK_POSITION_KEY);
+            Log.d(TAG, "view create "+playbackPosition);
+        }
+
         return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            playbackPosition = savedInstanceState.getLong(PLAYBACK_POSITION_KEY);
+            txtDescription.setText(savedInstanceState.getString(DESCRIPTION_KEY));
+            Log.d(TAG, "activity create "+playbackPosition);
+        }
     }
 
     /**
@@ -99,7 +125,6 @@ public class StepDetailFragment extends Fragment {
      */
     private void initializePlayer() {
         if(videoUri == null){
-
             return;
         }
         mExoPlayer = ExoPlayerFactory.newSimpleInstance(
@@ -128,6 +153,7 @@ public class StepDetailFragment extends Fragment {
         try {
             if(!jsonObject.getString("videoURL").equals("")){
                 videoUrl = jsonObject.getString("videoURL");
+                videoUri = Uri.parse(videoUrl);
             } else if(!jsonObject.getString("thumbnailURL").equals("")){
                 thumbnailURL = jsonObject.getString("thumbnailURL");
             }
@@ -171,6 +197,7 @@ public class StepDetailFragment extends Fragment {
         super.onStart();
         if (Util.SDK_INT > 23) {
             initializePlayer();
+            Log.d(TAG, "start "+playbackPosition);
         }
     }
 
@@ -180,6 +207,7 @@ public class StepDetailFragment extends Fragment {
         hideSystemUi();
         if ((Util.SDK_INT <= 23 || mPlayerView == null)) {
             initializePlayer();
+            Log.d(TAG, "resume "+playbackPosition);
         }
     }
 
@@ -191,6 +219,14 @@ public class StepDetailFragment extends Fragment {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        playbackPosition = mExoPlayer.getCurrentPosition();
+        bundle.putLong(PLAYBACK_POSITION_KEY, playbackPosition);
+        bundle.putString(DESCRIPTION_KEY, txtDescription.getText().toString());
+        super.onSaveInstanceState(bundle);
     }
 
     @Override
@@ -212,7 +248,6 @@ public class StepDetailFragment extends Fragment {
     private void releasePlayer() {
         mPlayerView.setVisibility(View.GONE);
         if (mExoPlayer != null) {
-            playbackPosition = mExoPlayer.getCurrentPosition();
             currentWindow = mExoPlayer.getCurrentWindowIndex();
             playWhenReady = mExoPlayer.getPlayWhenReady();
             mExoPlayer.release();
