@@ -2,6 +2,7 @@ package com.digitalnusantarastudio.bakingapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoMatchingViewException;
@@ -278,31 +279,67 @@ public class RecipeStepActivityTest {
     }
 
     /**
-     * test navigation.
+     * test if selected has no image or video
      */
     @Test
-    public void switchBetweenStepAndIngredients(){
-        if(isTablet(mActivityTestRule.getActivity())){
-        String recipeStep = "Recipe Introduction";
-        onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
+    public void onRecipeStepRotate(){
+        if(isTablet(mActivityTestRule.getActivity())){//this is phone only test
+            onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
-        //navigate to ingredients
-        onView(withId(R.id.txtIngredients)).perform(click());
-        onView(withId(R.id.ingredients_recycler_view)).check(new RecyclerViewItemCountAssertion(9));
+            //on first clicked, should show desc and video player
+            String recipeStep = "Recipe Introduction";
+            onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
+            onView(allOf(withId(R.id.playerView),
+                    withClassName(is(SimpleExoPlayerView.class.getName())))).check(new VideoPlaybackAssertion(true));
+            onView(withId(R.id.stepImageView)).check(matches(not(isDisplayed())));
 
-        //navigate to back to recipe step
-        onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
+            rotateScreen();
 
-        //navigate to another recipe step
-        String recipeStep2 = "2. Whisk the graham cracker crumbs, 50 grams (1/4 cup) of sugar, and 1/2 teaspoon of salt together in a medium bowl. Pour the melted butter and 1 teaspoon of vanilla into the dry ingredients and stir together until evenly mixed.";
-        onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
-        onView(allOf(withId(R.id.playerView),
-                withClassName(is(SimpleExoPlayerView.class.getName())))).check(new VideoPlaybackAssertion(true));
-        onView(withId(R.id.stepImageView)).check(matches(not(isDisplayed())));
+            //should show same item
+            onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
+            onView(allOf(withId(R.id.playerView),
+                    withClassName(is(SimpleExoPlayerView.class.getName())))).check(new VideoPlaybackAssertion(true));
+            onView(withId(R.id.stepImageView)).check(matches(not(isDisplayed())));
         }
     }
+
+    private void rotateScreen() {
+        //http://blog.sqisland.com/2015/10/espresso-save-and-restore-state.html
+        Context context = InstrumentationRegistry.getTargetContext();
+        int orientation = context.getResources().getConfiguration().orientation;
+
+        mActivityTestRule.getActivity().setRequestedOrientation(
+                (orientation == Configuration.ORIENTATION_PORTRAIT) ?
+                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
+                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    /**
+     * test navigation.
+     */
+//    @Test
+//    public void switchBetweenStepAndIngredients(){
+//        if(isTablet(mActivityTestRule.getActivity())){
+//        String recipeStep = "Recipe Introduction";
+//        onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+//        onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
+//
+//        //navigate to ingredients
+//        onView(withId(R.id.txtIngredients)).perform(click());
+//        onView(withId(R.id.ingredients_recycler_view)).check(new RecyclerViewItemCountAssertion(9));
+//
+//        //navigate to back to recipe step
+//        onView(withId(R.id.recipe_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(2, click()));
+//        onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep)));
+//
+//        //navigate to another recipe step
+//        String recipeStep2 = "2. Whisk the graham cracker crumbs, 50 grams (1/4 cup) of sugar, and 1/2 teaspoon of salt together in a medium bowl. Pour the melted butter and 1 teaspoon of vanilla into the dry ingredients and stir together until evenly mixed.";
+//        onView(withId(R.id.txtDescription)).check(matches(withText(recipeStep2)));
+//        onView(allOf(withId(R.id.playerView),
+//                withClassName(is(SimpleExoPlayerView.class.getName())))).check(new VideoPlaybackAssertion(true));
+//        onView(withId(R.id.stepImageView)).check(matches(not(isDisplayed())));
+//        }
+//    }
 
     public static boolean isTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
